@@ -234,7 +234,7 @@ export default function HomePage() {
             <a href="https://github.com/jktrolbot" className="text-indigo-600 hover:underline">
               @jktrolbot
             </a>{' '}
-            · AI Lead Qualification Demo
+            · <a href="https://lead-qualifier-red.vercel.app" className="text-indigo-600 hover:underline">lead-qualifier-red.vercel.app</a>
           </p>
         </div>
       </footer>

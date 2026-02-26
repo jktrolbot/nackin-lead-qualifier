@@ -23,8 +23,8 @@ Plus an **admin dashboard** with:
 
 ## 🚀 Live Demo
 
-- **Chatbot**: [nackin-lead-qualifier.vercel.app](https://nackin-lead-qualifier.vercel.app)
-- **Dashboard**: [nackin-lead-qualifier.vercel.app/dashboard](https://nackin-lead-qualifier.vercel.app/dashboard)
+- **Chatbot**: [lead-qualifier-red.vercel.app](https://lead-qualifier-red.vercel.app)
+- **Dashboard**: [lead-qualifier-red.vercel.app/dashboard](https://lead-qualifier-red.vercel.app/dashboard)
 
 ## ✨ Features
 
