@@ -4,9 +4,14 @@ import { ChatMessage, LeadData } from '@/types';
 import { scoreLead } from '@/lib/scoring';
 import { saveLead } from '@/lib/store';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy-init to avoid build-time instantiation (env vars not available at build)
+let _openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _openai;
+}
 
 const SYSTEM_PROMPT = `You are a friendly and professional lead qualification assistant for a web development agency. Your goal is to have a natural conversation with potential clients to understand their needs.
 
@@ -54,7 +59,7 @@ export async function POST(req: NextRequest) {
       })).filter(m => m.role === 'user' || m.role === 'assistant'),
     ];
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: 'gpt-4o',
       messages: openaiMessages,
       temperature: 0.7,
