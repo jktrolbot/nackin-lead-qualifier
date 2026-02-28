@@ -103,7 +103,7 @@ export function getLead(id: string): LeadData | undefined {
 export function saveLead(lead: LeadData): LeadData {
   const newLead: LeadData = {
     ...lead,
-    id: lead.id || `lead-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    id: lead.id || `lead-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
     createdAt: lead.createdAt || new Date().toISOString(),
   };
   

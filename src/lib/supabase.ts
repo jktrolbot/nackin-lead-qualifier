@@ -1,19 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Server-side client with service role for admin operations
-export function createServiceClient() {
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceKey) {
-    // Fall back to anon key if service role not available
-    return createClient(supabaseUrl, supabaseAnonKey);
-  }
-  return createClient(supabaseUrl, serviceKey);
-}
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 export type Database = {
   public: {
@@ -63,3 +48,28 @@ export type Database = {
     };
   };
 };
+
+/** Returns a Supabase client or null if env vars are not configured. */
+export function getSupabaseClient(): SupabaseClient<Database> | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient<Database>(url, key);
+}
+
+/** Server-side admin client. Returns null if not configured. */
+export function createServiceClient(): SupabaseClient<Database> | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key = serviceKey ?? anonKey;
+  if (!url || !key) return null;
+  return createClient<Database>(url, key);
+}
+
+/** Singleton anon client (for client components). */
+let _supabase: SupabaseClient<Database> | null = null;
+export function getSupabase(): SupabaseClient<Database> | null {
+  if (!_supabase) _supabase = getSupabaseClient();
+  return _supabase;
+}
