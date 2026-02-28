@@ -1,11 +1,21 @@
 # 🤖 AI Lead Qualification Chatbot
 
-> Qualify leads automatically with conversational AI. Built with GPT-4o, Next.js 15, and shadcn/ui.
+> Qualify leads automatically with conversational AI. Embeddable chat widget + admin dashboard with analytics.
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC)](https://tailwindcss.com)
-[![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-latest-black)](https://ui.shadcn.com)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=flat-square)](https://nackin-lead-qualifier.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js_15-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square&logo=openai&logoColor=white)](https://openai.com)
+[![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![Vercel](https://img.shields.io/badge/Vercel-000?style=flat-square&logo=vercel)](https://vercel.com)
+
+> ⚠️ **Demo Version** — Based on a production system built for a real client. Sensitive data and proprietary business logic have been removed.
+
+---
+
+![App Screenshot](./public/screenshot.png)
+
+---
 
 ## 🎯 What it does
 
@@ -21,10 +31,7 @@ Plus an **admin dashboard** with:
 - Lead detail view with full chat transcript
 - Analytics: leads/day chart, score distribution, conversion rate
 
-## 🚀 Live Demo
-
-- **Chatbot**: [lead-qualifier-red.vercel.app](https://lead-qualifier-red.vercel.app)
-- **Dashboard**: [lead-qualifier-red.vercel.app/dashboard](https://lead-qualifier-red.vercel.app/dashboard)
+---
 
 ## ✨ Features
 
@@ -34,9 +41,11 @@ Plus an **admin dashboard** with:
 - 🎯 **Smart extraction** — name, email, company, need, budget
 - 📈 **Analytics charts** — area chart + pie chart with Recharts
 - 🌙 **Dark mode** support
-- 📱 **Mobile responsive** 
+- 📱 **Mobile responsive**
 - ⚡ **Loading states** and error handling throughout
 - 🔔 **Hot lead webhooks** — instant notifications
+
+---
 
 ## 🏗 Architecture
 
@@ -63,6 +72,8 @@ Plus an **admin dashboard** with:
          └─────────┘                  └─────────┘
 ```
 
+---
+
 ## 📊 Lead Scoring
 
 | Score | Label | Criteria |
@@ -74,11 +85,13 @@ Plus an **admin dashboard** with:
 
 **Scoring factors:**
 - Email provided: +20 pts
-- Name provided: +10 pts  
+- Name provided: +10 pts
 - Company identified: +15 pts
 - Clear project need: +10 pts
-- Budget $10k+: +45 pts / $3k-$9k: +25 pts / <$3k: +5 pts
+- Budget $10k+: +45 pts / $3k–$9k: +25 pts / <$3k: +5 pts
 - Urgency detected: +10 pts
+
+---
 
 ## 🛠 Tech Stack
 
@@ -93,36 +106,29 @@ Plus an **admin dashboard** with:
 | Deployment | Vercel |
 | Icons | Lucide React |
 
+---
+
 ## ⚙️ Setup
 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/jktrolbot/nackin-lead-qualifier
+git clone https://github.com/nackin-io/nackin-lead-qualifier
 cd nackin-lead-qualifier
 npm install
 ```
 
 ### 2. Environment Variables
 
-Create `.env.local`:
-
 ```env
-# OpenAI
 OPENAI_API_KEY=sk-...
-
-# Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
-
-# Webhook (optional)
-WEBHOOK_URL=https://hooks.slack.com/services/...
+WEBHOOK_URL=https://hooks.slack.com/services/...  # optional
 ```
 
 ### 3. Supabase Setup
-
-Run this SQL in your Supabase project:
 
 ```sql
 create table leads (
@@ -139,38 +145,27 @@ create table leads (
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
-
--- Enable Row Level Security
 alter table leads enable row level security;
 ```
 
-### 4. Run Development Server
+### 4. Run
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
-
-### 5. Deploy to Vercel
-
-```bash
-vercel --prod
-```
-
-Or connect your GitHub repo to Vercel for automatic deployments.
+---
 
 ## 🔌 Embed Widget
 
-Add to any website:
-
 ```html
-<!-- Add to your site's <head> -->
 <script>
   window.LEAD_QUALIFIER_URL = 'https://your-deployment.vercel.app';
 </script>
 <script src="https://your-deployment.vercel.app/embed.js" async></script>
 ```
+
+---
 
 ## 📁 Project Structure
 
@@ -178,41 +173,32 @@ Add to any website:
 src/
 ├── app/
 │   ├── api/
-│   │   ├── chat/route.ts        # Chat + lead extraction
-│   │   ├── leads/route.ts       # CRUD for leads
-│   │   ├── leads/[id]/route.ts  # Individual lead ops
-│   │   └── metrics/route.ts     # Dashboard metrics
-│   ├── dashboard/
-│   │   └── page.tsx             # Admin dashboard
-│   ├── layout.tsx
-│   └── page.tsx                 # Landing + chatbot
+│   │   ├── chat/route.ts
+│   │   ├── leads/route.ts
+│   │   ├── leads/[id]/route.ts
+│   │   └── metrics/route.ts
+│   ├── dashboard/page.tsx
+│   └── page.tsx
 ├── components/
-│   ├── chatbot/
-│   │   └── ChatWidget.tsx       # Floating chat widget
+│   ├── chatbot/ChatWidget.tsx
 │   ├── dashboard/
-│   │   ├── MetricsCards.tsx     # KPI cards
-│   │   ├── LeadsChart.tsx       # Recharts visualizations
-│   │   └── LeadsTable.tsx       # Lead list + detail dialog
-│   └── ui/                      # shadcn/ui components
+│   │   ├── MetricsCards.tsx
+│   │   ├── LeadsChart.tsx
+│   │   └── LeadsTable.tsx
+│   └── ui/
 ├── lib/
-│   ├── scoring.ts               # Lead scoring logic
-│   ├── store.ts                 # In-memory store (demo)
-│   └── supabase.ts              # Supabase client
-└── types/
-    └── index.ts                 # TypeScript types
+│   ├── scoring.ts
+│   ├── store.ts
+│   └── supabase.ts
+└── types/index.ts
 ```
-
-## 🤝 Built for Upwork Portfolio
-
-This project demonstrates:
-- Full-stack Next.js 15 development
-- AI integration with OpenAI GPT-4o
-- Professional UI with shadcn/ui + Tailwind
-- TypeScript best practices
-- Production deployment with Vercel
-- Database design with Supabase
-- Real-time data visualization
 
 ---
 
-Built by [@jktrolbot](https://github.com/jktrolbot) · [nackin-lead-qualifier.vercel.app](https://nackin-lead-qualifier.vercel.app)
+## 📄 License
+
+MIT
+
+---
+
+> Built by [**Nackin**](https://nackin.io) — AI Engineering & Full-Stack Development Studio

@@ -41,7 +41,8 @@ Start by greeting warmly and asking what they're looking to build.`;
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, sessionId, existingLead } = await req.json() as {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { messages, sessionId: _sessionId, existingLead } = await req.json() as {
       messages: ChatMessage[];
       sessionId: string;
       existingLead?: Partial<LeadData>;
@@ -49,6 +50,11 @@ export async function POST(req: NextRequest) {
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: 'Invalid messages' }, { status: 400 });
+    }
+
+    // Guard against message flooding (cost / DoS protection)
+    if (messages.length > 50) {
+      return NextResponse.json({ error: 'Too many messages in session' }, { status: 400 });
     }
 
     const openaiMessages = [
@@ -67,9 +73,21 @@ export async function POST(req: NextRequest) {
     });
 
     const rawContent = completion.choices[0]?.message?.content || '';
-    
+
+    // Sanitize existingLead: only accept user-facing fields from the client.
+    // Never trust score, scoreLabel, notified, or id from the client body —
+    // those are computed server-side to prevent score manipulation.
+    const sanitizedExisting: Partial<LeadData> = {};
+    if (existingLead) {
+      if (existingLead.name)    sanitizedExisting.name    = String(existingLead.name).slice(0, 200);
+      if (existingLead.email)   sanitizedExisting.email   = String(existingLead.email).slice(0, 254);
+      if (existingLead.company) sanitizedExisting.company = String(existingLead.company).slice(0, 200);
+      if (existingLead.need)    sanitizedExisting.need    = String(existingLead.need).slice(0, 1000);
+      if (existingLead.budget)  sanitizedExisting.budget  = String(existingLead.budget).slice(0, 100);
+    }
+
     // Extract lead data from response
-    let leadData: Partial<LeadData> = existingLead || {};
+    const leadData: Partial<LeadData> = { ...sanitizedExisting };
     let isComplete = false;
     
     const leadDataMatch = rawContent.match(/<<<LEAD_DATA>>>([\s\S]*?)<<<END_LEAD_DATA>>>/);
@@ -136,12 +154,7 @@ export async function POST(req: NextRequest) {
 async function notifyHotLead(lead: LeadData) {
   const webhookUrl = process.env.WEBHOOK_URL;
   if (!webhookUrl || webhookUrl.includes('example.com')) {
-    console.log('🔥 HOT LEAD (mock notification):', {
-      name: lead.name,
-      email: lead.email,
-      company: lead.company,
-      score: lead.score,
-    });
+    // Hot lead detected - webhook notification skipped in demo mode
     return;
   }
 

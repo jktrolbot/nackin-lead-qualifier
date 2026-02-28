@@ -278,11 +278,11 @@ export default function HomePage() {
           <p className="text-xs text-muted-foreground">
             Built by{' '}
             <a
-              href="https://github.com/jktrolbot"
+              href="https://nackin.io"
               className="text-indigo-600 hover:underline inline-flex items-center gap-1"
             >
               <Github className="w-3 h-3" />
-              @jktrolbot
+              Nackin
             </a>{' '}
             ·{' '}
             <a
