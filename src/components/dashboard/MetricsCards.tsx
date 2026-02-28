@@ -17,7 +17,7 @@ export function MetricsCards({ metrics }: MetricsCardsProps) {
       icon: Users,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
-      change: '+12%',
+      change: `${metrics.hotLeads + metrics.warmLeads} qualified`,
     },
     {
       title: 'Hot Leads 🔥',
